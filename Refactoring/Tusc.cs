@@ -6,45 +6,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Refactoring
 {
     public class Tusc
     {
         public static void Start(List<User> usrs, List<Product> prods)
         {
-            // Write welcome message
-            Console.WriteLine("Welcome to TUSC");
-            Console.WriteLine("---------------");
+            DisplayWelcomeMsg();
 
+        
             // Login
             Login:
             bool loggedIn = false; // Is logged in?
 
-            // Prompt for user input
             Console.WriteLine();
-            Console.WriteLine("Enter Username:");
-            string name = Console.ReadLine();
+            string name = PromptUserInputFor("Username");
 
             // Validate Username
-            bool valUsr = false; // Is valid user?
+            bool validUsr = false; // Is valid user?
+
+            
             if (!string.IsNullOrEmpty(name))
             {
-                for (int i = 0; i < 5; i++)
-                {
-                    User user = usrs[i];
-                    // Check that name matches
-                    if (user.Name == name)
-                    {
-                        valUsr = true;
-                    }
-                }
+           
+                validUsr = IsUserNameFound(usrs, name);
 
                 // if valid user
-                if (valUsr)
+                if (validUsr)
                 {
                     // Prompt for user input
-                    Console.WriteLine("Enter Password:");
-                    string pwd = Console.ReadLine();
+                    string pwd = PromptUserInputFor("Password"); 
 
                     // Validate Password
                     bool valPwd = false; // Is valid password?
@@ -101,9 +93,9 @@ namespace Refactoring
                             }
                             Console.WriteLine(prods.Count + 1 + ": Exit");
 
-                            // Prompt for user input
-                            Console.WriteLine("Enter a number:");
-                            string answer = Console.ReadLine();
+
+                            string answer = PromptUserInputFor("a number");
+
                             int num = Convert.ToInt32(answer);
                             num = num - 1; /* Subtract 1 from number
                             num = num + 1 // Add 1 to number */
@@ -130,10 +122,7 @@ namespace Refactoring
                                 File.WriteAllText(@"Data/Products.json", json2);
 
 
-                                // Prevent console from closing
-                                Console.WriteLine();
-                                Console.WriteLine("Press Enter key to exit");
-                                Console.ReadLine();
+                                PromptForClose();
                                 return;
                             }
                             else
@@ -143,8 +132,7 @@ namespace Refactoring
                                 Console.WriteLine("Your balance is " + bal.ToString("C"));
 
                                 // Prompt for user input
-                                Console.WriteLine("Enter amount to purchase:");
-                                answer = Console.ReadLine();
+                                answer = PromptUserInputFor("amount to purchase");
                                 int qty = Convert.ToInt32(answer);
 
                                 // Check if balance - quantity * price is less than 0
@@ -221,6 +209,44 @@ namespace Refactoring
                 }
             }
 
+            PromptForClose();
+        }
+
+        private static void DisplayWelcomeMsg()
+        {
+            // Write welcome message
+            Console.WriteLine("Welcome to TUSC");
+            Console.WriteLine("---------------");
+        }
+
+        public static bool IsUserNameFound(List<User> usrs, string name)
+        {
+         
+            const int totalUsrs = 5;
+            bool matched = false;
+
+            for (int usr = 0; usr < totalUsrs; usr++)
+            {
+                User user = usrs[usr];
+                // Check that name matches
+                if (user.Name == name)
+                {
+                    matched = true;
+                }
+            }
+            return matched;
+        }
+
+        public static string PromptUserInputFor(string inputFor)
+        {
+            //Set the input for and return the input
+            Console.WriteLine("Enter " + inputFor + ":");
+            string name = Console.ReadLine();
+            return name;
+        }
+
+        public static void PromptForClose()
+        {
             // Prevent console from closing
             Console.WriteLine();
             Console.WriteLine("Press Enter key to exit");
